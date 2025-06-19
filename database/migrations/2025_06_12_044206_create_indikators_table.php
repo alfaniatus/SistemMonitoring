@@ -12,11 +12,12 @@ return new class extends Migration {
     {
         Schema::create('indikators', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->text('deskripsi')->nullable(); 
-            $table->boolean('pengisian_sementara')->default(false); 
-            $table->boolean('is_template')->default(false);
+            $table->string('name');                   // Nama indikator
+            $table->unsignedBigInteger('area_id');    // Relasi ke tabel areas
             $table->timestamps();
+
+            // Foreign key constraint ke tabel areas
+            $table->foreign('area_id')->references('id')->on('areas')->onDelete('cascade');
         });
     }
 
@@ -25,9 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('indikators', function (Blueprint $table) {
-            $table->dropColumn('pengisian_sementara');
-            $table->dropColumn('is_template');
-        });
+        Schema::dropIfExists('indikators');
     }
 };

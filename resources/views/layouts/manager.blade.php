@@ -8,25 +8,22 @@
     @vite('resources/css/app.css')
 </head>
 
-<body class="bg-whitetext-[#146082]">
+<body class="bg-white text-[#146082]">
     <div class="flex min-h-screen">
+        @auth
         <!-- Sidebar -->
-        @include('components.sidebar', ['role' => $role, 'areaUser' => $areaUser])
+         @include('manager-area.sidebar')
+        @endauth
 
-        <!-- Main Content -->
         <div class="flex-1 flex flex-col min-h-screen">
-            <!-- Navbar -->
             @include('components.navbar')
 
-            <!-- Content -->
             <main class="flex-1 bg-[#e9f7fc] rounded-tl-lg">
                 <div class="p-8">
-                    {{-- Render konten dinamis sesuai area --}}
-                    @include($contentView)
+                    @yield('content')
                 </div>
             </main>
 
-            <!-- Footer -->
             @include('components.footer')
         </div>
     </div>
