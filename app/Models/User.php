@@ -10,13 +10,17 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasRoles;
+    use HasFactory, HasRoles;
 
     protected $fillable = [
-        'email', 'password', 'area',
+        'email', 'password', 'role', 'area_id',
     ];
 
     protected $hidden = [
         'password', 'remember_token',
     ];
+    public function area()
+{
+    return $this->belongsTo(\App\Models\Area::class);
 }
+}   

@@ -12,39 +12,30 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
+
     public function login(Request $request)
-{
-    $credentials = $request->only('email', 'password');
+    {
+        $credentials = $request->only('email', 'password');
+        
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            $role = $user->getRoleNames()->first();
 
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
+            if ($role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif (str_starts_with($role, 'area')) {
+                return redirect()->route('manager-area.dashboard', ['area' => $role]);
+            }
 
-        $user = Auth::user();
-        $role = $user->getRoleNames()->first();
-
-        if ($role === 'admin') {
-            return redirect()->route('admin.dashboard');
+            return redirect('/');
         }
 
-       if (str_starts_with($role, 'area')) {
-    $areaNumber = str_replace('area', '', $role);
-    return redirect()->route('dashboard.area', ['area' => $areaNumber]);
-}
-        return redirect('/'); // default jika role tidak cocok
+        return back()->withErrors(['email' => 'Login gagal. Email atau password salah.']);
     }
 
-    return back()
-        ->withErrors(['email' => 'Login gagal.'])
-        ->onlyInput('email');
-}
-
-     public function logout(Request $request)
+    public function logout()
     {
         Auth::logout();
-
-        $request->session()->invalidate();          
-        $request->session()->regenerateToken();     
-
-        return redirect('/login');                   
+        return redirect()->route('login');
     }
-} 
+}

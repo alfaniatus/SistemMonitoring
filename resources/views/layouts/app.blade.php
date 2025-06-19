@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'LKE ZI Dashboard')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite('resources/css/app.css')
 </head>
-
-<body class="bg-whitetext-[#146082]">
+<body class="bg-white text-[#146082]">
     <div class="flex min-h-screen">
+        @auth
         <!-- Sidebar -->
-        @include('components.sidebar')
+         @include('admin.sidebar')
+        @endauth
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col min-h-screen">
@@ -31,5 +31,4 @@
     </div>
     @stack('scripts')
 </body>
-
 </html>

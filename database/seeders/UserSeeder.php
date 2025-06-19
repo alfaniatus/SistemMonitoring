@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use App\Models\Area;
 
 class UserSeeder extends Seeder
 {
@@ -23,23 +24,24 @@ class UserSeeder extends Seeder
             [
                 'password' => Hash::make('admin123'),
                 'role' => 'admin',
-                'area' => null,
+                'area_id' => null
             ]
         );
         $admin->assignRole('admin');
 
         // Manager area 1–6
-        for ($i = 1; $i <= 6; $i++) {
-            $areaCode = "area$i";
+       for ($i = 1; $i <= 6; $i++) {
+            $area = Area::where('name', "Area $i")->first();
+
             $user = User::updateOrCreate(
-                ['email' => "$areaCode@zi.com"],
+                ['email' => "area$i@zi.com"],
                 [
-                    'password' => Hash::make($areaCode),
+                    'password' => Hash::make("area$i"),
                     'role' => 'manager',
-                    'area' => $areaCode,
+                    'area_id' => $area->id
                 ]
             );
-            $user->assignRole($areaCode);
+            $user->assignRole("area$i");
         }
     }
 }
