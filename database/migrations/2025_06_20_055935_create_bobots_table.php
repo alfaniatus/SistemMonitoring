@@ -10,14 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('indikators', function (Blueprint $table) {
+        Schema::create('bobots', function (Blueprint $table) {
             $table->id();
-            $table->string('name');                   // Nama indikator
-            $table->unsignedBigInteger('area_id');    // Relasi ke tabel areas
+            $table->decimal('bobot', 5, 2)->nullable();
             $table->timestamps();
-
-            // Foreign key constraint ke tabel areas
-            $table->foreign('area_id')->references('id')->on('areas')->onDelete('cascade');
         });
     }
 
@@ -26,6 +22,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('indikators');
+        Schema::dropIfExists('bobots');
     }
 };

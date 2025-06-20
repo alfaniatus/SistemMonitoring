@@ -11,10 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jumlah_jawabans', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+       Schema::create('opsi_jawabans', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('indikator_id')->constrained()->onDelete('cascade');
+    $table->string('opsi'); 
+    $table->string('teks'); 
+    $table->decimal('bobot', 5, 2)->nullable(); 
+    $table->timestamps();
+});
+
     }
 
     /**
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jumlah_jawabans');
+        Schema::dropIfExists('opsi_jawabans');
     }
 };

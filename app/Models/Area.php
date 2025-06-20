@@ -20,4 +20,8 @@ class Area extends Model
     {
         return $this->hasMany(Indikator::class);
     }
+    public function subAreas()
+{
+    return $this->hasMany(SubArea::class);
+}
 }
