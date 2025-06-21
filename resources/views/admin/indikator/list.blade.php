@@ -15,6 +15,7 @@
             <tr class="bg-gray-200">
                 <th class="border px-4 py-2">Area</th>
                 <th class="border px-4 py-2">Sub Area</th>
+                <th class="border px-4 py-2">Kategori</th>
                 <th class="border px-4 py-2">Nama Indikator</th>
                 <th class="border px-4 py-2">Pertanyaan</th>
                 <th class="border px-4 py-2">Tipe Jawaban</th>
@@ -26,6 +27,7 @@
                 <tr>
                     <td class="border px-4 py-2">{{ $indikator->area->name }}</td>
                     <td class="border px-4 py-2">{{ $indikator->subArea->name }}</td>
+                    <td class="border px-4 py-2">{{ ucfirst($indikator->kategori) }}</td>
                     <td class="border px-4 py-2">{{ $indikator->nama_indikator }}</td>
                     <td class="border px-4 py-2">{{ $indikator->pertanyaan }}</td>
                     <td class="border px-4 py-2">{{ strtoupper($indikator->tipe_jawaban) }}</td>

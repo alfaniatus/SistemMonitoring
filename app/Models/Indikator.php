@@ -9,7 +9,7 @@ class Indikator extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['pertanyaan', 'area_id', 'sub_area_id', 'nama_indikator', 'tipe_jawaban', 'bobot', 'is_published'];
+    protected $fillable = ['pertanyaan', 'area_id', 'sub_area_id', 'kategori', 'nama_indikator', 'tipe_jawaban', 'bobot', 'is_published'];
 
     public function area()
     {
@@ -20,7 +20,11 @@ class Indikator extends Model
         return $this->belongsTo(SubArea::class);
     }
     public function opsiJawaban()
-{
-    return $this->hasMany(OpsiJawaban::class);
-}
+    {
+        return $this->hasMany(OpsiJawaban::class);
+    }
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
+    }
 }

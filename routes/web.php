@@ -21,6 +21,10 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/indikator/edit/{id}', [IndikatorController::class, 'edit'])->name('indikator.edit');
     Route::put('/indikator/{id}', [IndikatorController::class, 'update'])->name('indikator.update');
     Route::delete('/indikator/{id}', [IndikatorController::class, 'destroy'])->name('indikator.destroy');
+    //Publish Indikator
+Route::get('/admin/indikator/copy', [IndikatorController::class, 'copyForm'])->name('indikator.copy.form');
+Route::post('/admin/indikator/copy', [IndikatorController::class, 'copyIndikator'])->name('indikator.copy');
+
 });
 //Dashboard Manager Area
 Route::prefix('manager-area')

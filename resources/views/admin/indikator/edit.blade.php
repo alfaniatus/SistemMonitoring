@@ -95,10 +95,10 @@
 
                 {{-- Bobot Total --}}
                 <div>
-                    <label class="block font-medium">Bobot Total (otomatis)</label>
-                    <input type="number" name="bobot" value="{{ $totalBobot }}"
-                        class="w-full border px-3 py-2 rounded bg-gray-100 text-gray-600" readonly>
+                    <label class="block font-medium mt-4">Bobot Total (otomatis)</label>
+                    <input type="text" id="bobot_total" class="w-full border rounded px-3 py-2 bg-gray-100" readonly>
                 </div>
+
 
                 {{-- Tombol --}}
                 <div>
@@ -112,4 +112,4 @@
     </div>
 
     <script src="{{ asset('js/edit-indikator.js') }}"></script>
-@endsection
+@endsection 

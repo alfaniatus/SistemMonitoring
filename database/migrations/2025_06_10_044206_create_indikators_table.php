@@ -15,7 +15,9 @@ return new class extends Migration {
             $table->text('pertanyaan');
             $table->foreignId('area_id')->constrained()->onDelete('cascade');
             $table->foreignId('sub_area_id')->constrained()->onDelete('cascade');
-            $table->string('nama_indikator')->nullable(); 
+            $table->foreignId('periode_id')->constrained('periodes')->onDelete('cascade');
+            $table->enum('kategori', ['reform', 'pemenuhan'])->default('reform');
+            $table->string('nama_indikator')->nullable();
             $table->enum('tipe_jawaban', ['ya/tidak', 'abcde']);
             $table->integer('bobot');
             $table->boolean('is_published')->default(false);

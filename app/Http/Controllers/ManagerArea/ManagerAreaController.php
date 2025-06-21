@@ -39,4 +39,20 @@ class ManagerAreaController extends Controller
             'dataIndikator' => $dataIndikator,
         ]);
     }
+    public function pemenuhan()
+{
+    $user = Auth::user();
+    $areaId = $user->area_id;
+
+    $periodeAktif = Periode::orderByDesc('tahun')->first(); // misal: tahun terbaru
+
+    $indikators = Indikator::where('is_published', true)
+        ->where('area_id', $areaId)
+        ->where('kategori', 'pemenuhan')
+        ->where('periode_id', $periodeAktif->id)
+        ->get();
+
+    return view('manager.pemenuhan', compact('indikators', 'periodeAktif'));
+}
+
 }

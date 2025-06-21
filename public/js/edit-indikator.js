@@ -5,26 +5,34 @@ document.addEventListener('DOMContentLoaded', function () {
     const tambahOpsiWrapper = document.getElementById('tambah_opsi_wrapper');
     const areaSelect = document.getElementById('area_id');
     const subAreaSelect = document.getElementById('sub_area_id');
+    const totalBobotInput = document.getElementById('bobot_total');
 
     const abjad = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-
-    // Ambil data awal dari form
     const formElement = document.querySelector('form');
-    const opsiCountStart = parseInt(formElement.dataset.opsicount || 0);
-    const subAreaIdLama = parseInt(formElement.dataset.subareaId || 0);
+    const subAreaIdLama = parseInt(formElement?.dataset.subareaId || 0);
 
-    let opsiCount = opsiCountStart;
+    // ✅ Dapatkan index opsi terakhir dari value tersembunyi (misal A, B, C)
+    function getLastOpsiIndex() {
+        const inputs = document.querySelectorAll('[name^="opsi["][name$="[opsi]"]');
+        let lastIndex = -1;
+        inputs.forEach(input => {
+            const huruf = input.value.toUpperCase();
+            const index = abjad.indexOf(huruf);
+            if (index > lastIndex) lastIndex = index;
+        });
+        return lastIndex + 1;
+    }
 
-    // Tampilkan atau sembunyikan div opsi ABCDE tergantung tipe jawaban
+    let opsiCount = getLastOpsiIndex();
+
+    // ✅ Tampilkan/sembunyikan bagian opsi sesuai tipe jawaban
     function toggleOpsiAbcde() {
         const isAbcde = tipeJawabanSelect.value === 'abcde';
         opsiAbcdeDiv.classList.toggle('hidden', !isAbcde);
-        if (tambahOpsiWrapper) {
-            tambahOpsiWrapper.classList.toggle('hidden', !isAbcde);
-        }
+        if (tambahOpsiWrapper) tambahOpsiWrapper.classList.toggle('hidden', !isAbcde);
     }
 
-    // Ganti isi sub area berdasarkan area terpilih
+    // ✅ Ganti sub area sesuai area
     function updateSubAreas() {
         const selectedOption = areaSelect.options[areaSelect.selectedIndex];
         const subAreas = JSON.parse(selectedOption.getAttribute('data-subareas') || '[]');
@@ -39,11 +47,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Tambah opsi baru (C, D, E, dst)
+    // ✅ Tambah opsi baru dengan huruf berurutan
     if (tambahOpsiBtn) {
         tambahOpsiBtn.addEventListener('click', () => {
             if (opsiCount >= abjad.length) return;
-
             const huruf = abjad[opsiCount];
 
             const wrapper = document.createElement('div');
@@ -62,14 +69,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
             opsiAbcdeDiv.appendChild(wrapper);
             opsiCount++;
+            hitungTotalBobot(); // update total bobot setelah tambah
         });
     }
+
+    // ✅ Hitung total bobot secara realtime
+    function hitungTotalBobot() {
+        const bobotInputs = document.querySelectorAll('[name^="opsi["][name$="[bobot]"]');
+        let total = 0;
+        bobotInputs.forEach(input => {
+            const val = parseFloat(input.value.replace(',', '.'));
+            if (!isNaN(val)) total += val;
+        });
+        if (totalBobotInput) {
+            totalBobotInput.value = total.toFixed(2).replace('.', ',');
+        }
+    }
+
+    // ✅ Event listener perubahan bobot
+    document.addEventListener('input', function (e) {
+        if (e.target.name?.includes('[bobot]')) {
+            hitungTotalBobot();
+        }
+    });
 
     // Inisialisasi awal
     toggleOpsiAbcde();
     updateSubAreas();
+    hitungTotalBobot();
 
-    // Event listener
     tipeJawabanSelect.addEventListener('change', toggleOpsiAbcde);
     areaSelect.addEventListener('change', updateSubAreas);
 });
