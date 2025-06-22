@@ -9,7 +9,7 @@ class Indikator extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['pertanyaan', 'area_id', 'sub_area_id', 'kategori', 'nama_indikator', 'tipe_jawaban', 'bobot', 'is_published'];
+    protected $fillable = ['pertanyaan', 'area_id', 'sub_area_id', 'periode_id', 'kategori', 'nama_indikator', 'tipe_jawaban', 'bobot', 'is_published'];
 
     public function area()
     {

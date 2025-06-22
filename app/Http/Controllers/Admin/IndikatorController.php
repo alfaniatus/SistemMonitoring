@@ -10,7 +10,6 @@ use App\Models\SubArea;
 use App\Models\OpsiJawaban;
 use App\Models\Periode;
 
-
 class IndikatorController extends Controller
 {
     public function index()
@@ -21,25 +20,28 @@ class IndikatorController extends Controller
 
     public function create()
     {
-        $areas = Area::with('subAreas')->get(); 
+        $areas = Area::with('subAreas')->get();
         $periodes = Periode::all();
         return view('admin.indikator.create', compact('areas', 'periodes'));
     }
 
     public function store(Request $request)
     {
+        // Cek asal: apakah dari template
+        $dariTemplate = $request->has('from_template');
+
+        // Validasi wajib untuk semua form
         $request->validate([
-            'periode_id' => 'required|exists:periodes,id',
-            'kategori' => 'required|in:reform,pemenuhan',
             'pertanyaan' => 'required',
             'nama_indikator' => 'required|string|max:255',
             'area_id' => 'required|exists:areas,id',
             'sub_area_id' => 'required|exists:sub_areas,id',
-            'kategori' => 'required|in:reform,pemenuhan',
             'tipe_jawaban' => 'required|in:ya/tidak,abcde',
+            'periode_id' => 'required|exists:periodes,id',
+            'kategori' => 'required|in:reform,pemenuhan',
         ]);
 
-        // Simpan indikator utama
+        // Simpan ke DB
         $indikator = Indikator::create([
             'periode_id' => $request->periode_id,
             'kategori' => $request->kategori,
@@ -47,43 +49,41 @@ class IndikatorController extends Controller
             'nama_indikator' => $request->nama_indikator,
             'area_id' => $request->area_id,
             'sub_area_id' => $request->sub_area_id,
-            'kategori' => $request->kategori,
             'tipe_jawaban' => $request->tipe_jawaban,
-            'bobot' => 0, // default sementara, karena pakai bobot per opsi
+            'bobot' => 0,
             'is_published' => false,
         ]);
 
-        // TIPE YA/TIDAK
+        // Opsi ya/tidak
         if ($request->tipe_jawaban === 'ya/tidak') {
-            $opsiYaTidak = [['opsi' => 'A', 'teks' => 'Ya', 'bobot' => 1.0], ['opsi' => 'B', 'teks' => 'Tidak', 'bobot' => 0.0]];
-
-            foreach ($opsiYaTidak as $opsi) {
-                OpsiJawaban::create([
-                    'indikator_id' => $indikator->id,
-                    'opsi' => $opsi['opsi'],
-                    'teks' => $opsi['teks'],
-                    'bobot' => $opsi['bobot'],
-                ]);
-            }
+            OpsiJawaban::insert([['indikator_id' => $indikator->id, 'opsi' => 'A', 'teks' => 'Ya', 'bobot' => 1.0], ['indikator_id' => $indikator->id, 'opsi' => 'B', 'teks' => 'Tidak', 'bobot' => 0.0]]);
         }
 
-        // TIPE ABCDE
-        if ($request->tipe_jawaban === 'abcde') {
-            if ($request->has('opsi_jawaban')) {
-                foreach ($request->opsi_jawaban as $kode => $opsi) {
-                    if (!empty($opsi['teks']) && isset($opsi['bobot'])) {
-                        OpsiJawaban::create([
-                            'indikator_id' => $indikator->id,
-                            'opsi' => $kode, // PAKAI 'opsi' bukan 'kode'
-                            'teks' => $opsi['teks'],
-                            'bobot' => $opsi['bobot'],
-                        ]);
-                    }
+        // Opsi A–E
+        if ($request->tipe_jawaban === 'abcde' && $request->has('opsi_jawaban')) {
+            foreach ($request->opsi_jawaban as $kode => $opsi) {
+                if (!empty($opsi['teks']) && isset($opsi['bobot'])) {
+                    OpsiJawaban::create([
+                        'indikator_id' => $indikator->id,
+                        'opsi' => $kode,
+                        'teks' => $opsi['teks'],
+                        'bobot' => $opsi['bobot'],
+                    ]);
                 }
             }
         }
 
-        return redirect()->route('indikator.index')->with('success', 'Data Indikator Berhasil Disimpan');
+        // Redirect ke asal halaman
+        if ($dariTemplate) {
+            return redirect()
+                ->route('indikator.template', [
+                    'periode_id' => $request->periode_id,
+                    'kategori' => $request->kategori,
+                ])
+                ->with('success', 'Indikator template berhasil ditambahkan');
+        }
+
+        return redirect()->route('indikator.index')->with('success', 'Indikator berhasil ditambahkan');
     }
 
     public function list()
@@ -164,27 +164,40 @@ class IndikatorController extends Controller
         Indikator::destroy($id);
         return redirect()->route('indikator.index')->with('success', 'Data Indikator Berhasil Dihapus');
     }
-    public function copyIndikator(Request $request)
-{
-    $from = $request->from_periode_id;
-    $to = $request->to_periode_id;
 
-    $indikators = Indikator::where('periode_id', $from)->get();
+    public function template(Request $request)
+    {
+        $periodes = Periode::orderBy('tahun', 'desc')->get();
+        $indikators = collect();
+        $periode = null;
+        $kategori = $request->kategori ?? '';
 
-    foreach ($indikators as $ind) {
-        Indikator::create([
-            'periode_id' => $to,
-            'kategori' => $ind->kategori,
-            'area_id' => $ind->area_id,
-            'sub_area_id' => $ind->sub_area_id,
-            'pertanyaan' => $ind->pertanyaan,
-            'tipe_jawaban' => $ind->tipe_jawaban,
-            'bobot' => $ind->bobot,
-            'is_published' => false, // ⬅️ belum dipublish ulang
-        ]);
+        if ($request->filled('periode_id')) {
+            $request->validate([
+                'periode_id' => 'exists:periodes,id',
+                'kategori' => 'nullable|in:reform,pemenuhan',
+            ]);
+
+            $periode = Periode::findOrFail($request->periode_id);
+
+            $query = Indikator::with(['area', 'subArea'])->where('periode_id', $request->periode_id);
+
+            if ($request->filled('kategori')) {
+                $query->where('kategori', $request->kategori);
+            }
+
+            $indikators = $query->orderBy('created_at', 'desc')->get();
+        }
+
+        return view('admin.indikator.template', compact('periodes', 'periode', 'kategori', 'indikators'));
     }
 
-    return back()->with('success', 'Template berhasil disalin ke periode baru.');
-}
+    public function togglePublish($id)
+    {
+        $indikator = Indikator::findOrFail($id);
+        $indikator->is_published = !$indikator->is_published;
+        $indikator->save();
 
+        return back()->with('success', 'Status publish berhasil diperbarui.');
+    }
 }

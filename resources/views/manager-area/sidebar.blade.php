@@ -25,9 +25,6 @@
             <span class="font-semibold mt-1">Dashboard</span>
         </a>
 
-        {{-- Indikator --}}
-        @include('components.sidebar.indikator')
-
         {{-- Area Sidebar --}}
         @includeIf('components.sidebar.sidebar-area' . $areaId)
 

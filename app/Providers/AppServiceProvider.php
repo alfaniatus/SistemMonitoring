@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
         $user = Auth::user();
         $role = $user?->getRoleNames()->first();
         $area = $user?->area;
+        $areaId = $user?->area_id;
         $areaUser = Str::after($area, 'area');
         $routeName = Request::route()?->getName();
 
@@ -37,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
         $dashboardActive = $routeName === ($role === 'admin' ? 'admin.dashboard' : 'manager-area.dashboard');
 
         $view->with(compact(
-            'user', 'role', 'area', 'areaUser', 'routeName',
+            'user', 'role', 'area', 'areaId', 'areaUser', 'routeName',
             'indikatorActive', 'dashboardActive'
         ));
     });
