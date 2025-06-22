@@ -17,18 +17,6 @@ class AdminController extends Controller
         ]);
     }
 
-    // Halaman Indikator
-    public function indikator()
-    {
-        $dataIndikator = Indikator::with('area')->get();
-        return view('admin.indikator', [
-            'role' => 'admin',
-            'tahunList' => range(2020, date('Y')),
-            'routeName' => 'admin.indikator',
-            'dataIndikator' => $dataIndikator,
-        ]);
-    }
-
     // Halaman Validasi
     public function validasi()
     {

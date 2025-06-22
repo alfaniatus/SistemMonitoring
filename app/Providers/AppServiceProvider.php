@@ -24,17 +24,23 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('*', function ($view) {
-            $user = Auth::user();
-            $role = $user?->getRoleNames()->first(); // dari Spatie
-            $area = $user?->area;
-          $areaUser = Str::after($area, 'area');
-            $routeName = Request::route()?->getName();
-    
-            $activeClass = ($routeName === 'admin.dashboard') 
-                ? 'bg-[#146082] text-white' 
-                : 'text-[#374957]';
-    
-            $view->with(compact('user', 'role', 'area', 'areaUser', 'routeName', 'activeClass'));
-        });
-    }
+        $user = Auth::user();
+        $role = $user?->getRoleNames()->first();
+        $area = $user?->area;
+        $areaId = $user?->area_id;
+        $areaUser = Str::after($area, 'area');
+        $routeName = Request::route()?->getName();
+
+        // Sidebar aktif indikator
+        $indikatorActive = Str::startsWith($routeName, 'indikator.') || Str::startsWith($routeName, 'manager-area.indikator');
+
+        // Sidebar aktif dashboard
+        $dashboardActive = $routeName === ($role === 'admin' ? 'admin.dashboard' : 'manager-area.dashboard');
+
+        $view->with(compact(
+            'user', 'role', 'area', 'areaId', 'areaUser', 'routeName',
+            'indikatorActive', 'dashboardActive'
+        ));
+    });
+}
 }

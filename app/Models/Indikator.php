@@ -7,13 +7,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Indikator extends Model
 {
-   use HasFactory;
+    use HasFactory;
 
-    protected $fillable = ['name', 'area_id'];
+    protected $fillable = ['pertanyaan', 'area_id', 'sub_area_id', 'periode_id', 'kategori', 'nama_indikator', 'tipe_jawaban', 'bobot', 'is_published'];
 
-    // Relasi ke Area
     public function area()
     {
         return $this->belongsTo(Area::class);
+    }
+    public function subArea()
+    {
+        return $this->belongsTo(SubArea::class);
+    }
+    public function opsiJawaban()
+    {
+        return $this->hasMany(OpsiJawaban::class);
+    }
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
     }
 }

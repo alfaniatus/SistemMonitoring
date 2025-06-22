@@ -7,25 +7,13 @@ use App\Models\Tahun;
 
 class IndikatorController extends Controller
 {
-    public function index()
-    {
-        $role = auth()->user()->role;
+ public function index()
+{
+    $indikators = Indikator::with('area', 'subArea')
+        ->where('is_published', false)
+        ->orderByDesc('created_at')
+        ->get();
 
-        // ambil semua tahun untuk filter indikator
-        $tahunList = Tahun::orderBy('tahun', 'desc')->pluck('tahun');
-
-        // route indikator untuk sidebar, dikirim ke view
-        $indikatorRoute = $role === 'admin'
-            ? route('admin.indikator')
-            : route('manager-area.indikator');
-
-        // tentukan view mana yang mau dipakai
-        $viewName = $role === 'admin' ? 'admin.indikator' : 'manager-area.indikator';
-
-        return view($viewName, [
-            'tahunList' => $tahunList,
-            'indikatorRoute' => $indikatorRoute,
-            'role' => $role
-        ]);
-    }
+    return view('admin.indikator.index', compact('indikators'));
+}
 }

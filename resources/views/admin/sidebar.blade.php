@@ -4,10 +4,12 @@
          <span class="block">Poliwangi</span>
      </div>
      <nav class="space-y-2 font-medium text-sm p-6">
-         <div
-             class="flex cursor-pointer items-center space-x-2 rounded-lg py-2 {{ $activeClass }} transition-all hover:bg-[#146082] hover:text-white">
-             <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-2 w-full px-2">
-                 <svg width="18" height="18" viewBox="0 0 26 26" fill="currentColor"
+         <div>
+             <a href="{{ route($role === 'admin' ? 'admin.dashboard' : 'manager-area.dashboard') }}"
+    class="flex cursor-pointer items-center space-x-2 rounded-lg py-2 w-full px-2
+        {{ $dashboardActive ? 'bg-[#146082] text-white' : 'text-[#374957]' }}
+        transition-all hover:bg-[#146082] hover:text-white">
+             <svg width="18" height="18" viewBox="0 0 26 26" fill="currentColor"
                      xmlns="http://www.w3.org/2000/svg">
                      <g clip-path="url(#clip0_160_663)">
                          <path
