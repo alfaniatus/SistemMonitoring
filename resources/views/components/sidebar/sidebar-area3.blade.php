@@ -1,5 +1,5 @@
-<details class="group" @if (isset($currentKategori) && in_array($currentKategori, ['pemenuhan', 'reform']) && $areaId == 3) open @endif>
-    <summary
+<details class="group" {{ ($areaId == 3 && in_array($currentKategori, ['pemenuhan', 'reform'])) ? 'open' : '' }}>
+ <summary
         class="flex w-fit cursor-pointer items-center rounded-lg px-6 py-2 text-[#374957] hover:bg-[#146082] hover:text-white">
         <svg class="-ml-4" width="18" height="18" viewBox="0 0 28 28" fill="currentColor"
             xmlns="http://www.w3.org/2000/svg">
@@ -8,7 +8,7 @@
                 fill="currentColor" />
         </svg>
 
-        <span class="text-sm font-medium ml-2.5">Area I</span>
+        <span class="text-sm font-medium ml-2.5">Area III</span>
 
         <span class="pl-5 shrink-6 transition duration-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="size-5 -mb-1" viewBox="0 0 20 20" fill="currentColor">
@@ -23,7 +23,7 @@
         <li>
             <a href="{{ route('manager-area.indikator.index', ['area' => 3, 'kategori' => 'pemenuhan']) }}"
                 class="flex cursor-pointer items-center rounded-lg px-6 py-2 mt-2
-                    {{ $areaId == 1 && $currentKategori == 'pemenuhan' ? 'bg-[#146082] text-white' : 'text-[#374957]' }}
+                    {{ $areaId == 3 && $currentKategori == 'pemenuhan' ? 'bg-[#146082] text-white' : 'text-[#374957]' }}
                     hover:bg-[#146082] hover:text-white">
                 <svg class="pr-2" width="28" height="18" viewBox="0 0 28 28" fill="currentColor"
                     xmlns="http://www.w3.org/2000/svg">
@@ -45,7 +45,7 @@
         <li>
             <a href="{{ route('manager-area.indikator.index', ['area' => 3, 'kategori' => 'reform']) }}"
                 class="flex cursor-pointer items-center rounded-lg px-6 py-2 mt-2
-                    {{ $areaId == 1 && $currentKategori == 'reform' ? 'bg-[#146082] text-white' : 'text-[#374957]' }}
+                    {{ $areaId == 3 && $currentKategori == 'reform' ? 'bg-[#146082] text-white' : 'text-[#374957]' }}
                     hover:bg-[#146082] hover:text-white">
                 <svg class="pr-2" width="28" height="18" viewBox="0 0 28 28" fill="currentColor"
                     xmlns="http://www.w3.org/2000/svg">

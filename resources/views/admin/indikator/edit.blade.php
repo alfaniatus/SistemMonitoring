@@ -1,22 +1,24 @@
 @extends('layouts.app')
 
+
 @section('content')
     <div class="max-w-5xl mx-auto p-6 bg-white rounded shadow text-sm">
         <h2 class="text-xl font-semibold mb-6 text-[#0E4A64]">Edit Indikator</h2>
 
         <form method="POST" action="{{ route('indikator.update', $indikator->id) }}"
             data-opsicount="{{ count($indikator->opsiJawaban) }}" data-subarea-id="{{ $indikator->sub_area_id }}">
-
             @csrf
             @method('PUT')
 
+            @if (request('from') === 'template')
+                <input type="hidden" name="from" value="template">
+                <input type="hidden" name="periode_id" value="{{ request('periode_id') }}">
+                <input type="hidden" name="kategori" value="{{ request('kategori') }}">
+            @endif
+
             <div class="space-y-4">
 
-                {{-- Pertanyaan --}}
-                <div>
-                    <label class="block font-medium">Pertanyaan</label>
-                    <textarea name="pertanyaan" required class="w-full border px-3 py-2 rounded">{{ old('pertanyaan', $indikator->pertanyaan) }}</textarea>
-                </div>
+               
 
                 {{-- Area --}}
                 <div>
@@ -51,13 +53,18 @@
                         class="w-full border px-3 py-2 rounded" required>
                 </div>
 
+                 {{-- Pertanyaan --}}
+                <div>
+                    <label class="block font-medium">Pertanyaan</label>
+                    <textarea name="pertanyaan" required class="w-full border px-3 py-2 rounded">{{ old('pertanyaan', $indikator->pertanyaan) }}</textarea>
+                </div>
+
                 {{-- Tipe Jawaban --}}
                 <div>
                     <label class="block font-medium">Tipe Jawaban</label>
                     <select name="tipe_jawaban" id="tipe_jawaban" class="w-full border px-3 py-2 rounded" required>
                         @foreach ($tipeList as $tipe)
-                            <option value="{{ $tipe }}"
-                                {{ $indikator->tipe_jawaban === $tipe ? 'selected' : '' }}>
+                            <option value="{{ $tipe }}" {{ $indikator->tipe_jawaban === $tipe ? 'selected' : '' }}>
                                 {{ strtoupper($tipe) }}
                             </option>
                         @endforeach
@@ -99,10 +106,10 @@
                     <input type="text" id="bobot_total" class="w-full border rounded px-3 py-2 bg-gray-100" readonly>
                 </div>
 
-
                 {{-- Tombol --}}
                 <div>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white  px-4 py-2 rounded">
+                    <button type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white  px-4 py-2 rounded">
                         Simpan Perubahan
                     </button>
                 </div>
@@ -112,4 +119,4 @@
     </div>
 
     <script src="{{ asset('js/edit-indikator.js') }}"></script>
-@endsection 
+@endsection

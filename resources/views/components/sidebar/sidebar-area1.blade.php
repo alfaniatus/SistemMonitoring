@@ -1,5 +1,6 @@
-<details class="group" @if (isset($currentKategori) && in_array($currentKategori, ['pemenuhan', 'reform']) && $areaId == 1) open @endif>
-    <summary
+<details class="group" 
+    {{ (isset($areaId, $currentKategori) && $areaId == 1 && in_array($currentKategori, ['pemenuhan', 'reform'])) ? 'open' : '' }}>
+<summary
         class="flex w-fit cursor-pointer items-center rounded-lg px-6 py-2 text-[#374957] hover:bg-[#146082] hover:text-white">
         <svg class="-ml-4" width="18" height="18" viewBox="0 0 28 28" fill="currentColor"
             xmlns="http://www.w3.org/2000/svg">
@@ -21,10 +22,12 @@
 
     <ul>
         <li>
-            <a href="{{ route('manager-area.indikator.index', ['area' => 1, 'kategori' => 'pemenuhan']) }}"
-                class="flex cursor-pointer items-center rounded-lg px-6 py-2 mt-2
-                    {{ $areaId == 1 && $currentKategori == 'pemenuhan' ? 'bg-[#146082] text-white' : 'text-[#374957]' }}
-                    hover:bg-[#146082] hover:text-white">
+            <li>
+    <a href="{{ route('manager-area.indikator.index', ['area' => 1, 'kategori' => 'pemenuhan']) }}"
+        class="flex cursor-pointer items-center rounded-lg px-6 py-2 mt-2
+            {{ (isset($areaId, $currentKategori) && $areaId == 1 && $currentKategori == 'pemenuhan') ? 'bg-[#146082] text-white' : 'text-[#374957]' }}
+            hover:bg-[#146082] hover:text-white">
+
                 <svg class="pr-2" width="28" height="18" viewBox="0 0 28 28" fill="currentColor"
                     xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_64_560)">
@@ -43,10 +46,12 @@
         </li>
 
         <li>
-            <a href="{{ route('manager-area.indikator.index', ['area' => 1, 'kategori' => 'reform']) }}"
-                class="flex cursor-pointer items-center rounded-lg px-6 py-2 mt-2
-                    {{ $areaId == 1 && $currentKategori == 'reform' ? 'bg-[#146082] text-white' : 'text-[#374957]' }}
-                    hover:bg-[#146082] hover:text-white">
+            <li>
+    <a href="{{ route('manager-area.indikator.index', ['area' => 1, 'kategori' => 'reform']) }}"
+        class="flex cursor-pointer items-center rounded-lg px-6 py-2 mt-2
+            {{ (isset($areaId, $currentKategori) && $areaId == 1 && $currentKategori == 'reform') ? 'bg-[#146082] text-white' : 'text-[#374957]' }}
+            hover:bg-[#146082] hover:text-white">
+
                 <svg class="pr-2" width="28" height="18" viewBox="0 0 28 28" fill="currentColor"
                     xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_64_560)">

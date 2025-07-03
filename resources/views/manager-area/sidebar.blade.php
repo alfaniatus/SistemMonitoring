@@ -26,7 +26,7 @@
         </a>
 
         {{-- Area Sidebar --}}
-        @includeIf('components.sidebar.sidebar-area' . $areaId)
+      @includeIf('components.sidebar.sidebar-area' . $areaId, ['areaId' => $areaId, 'currentKategori' => $currentKategori])
 
         {{-- Hasil --}}
         @include('components.sidebar.hasil')

@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class OpsiJawaban extends Model
 {
+    public $timestamps = true;
     use HasFactory;
-    protected $fillable = ['indikator_id', 'opsi', 'teks', 'bobot'];
+    protected $fillable = ['indikator_id', 'opsi', 'teks', 'bobot',];
 
     public function indikator()
     {

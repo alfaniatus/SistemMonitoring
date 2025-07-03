@@ -1,76 +1,84 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-5xl mx-auto p-6 bg-white rounded shadow text-sm">
-        <h2 class="text-xl font-bold mb-4">Daftar Indikator Belum Dipublish</h2>
+<div class="max-w-6xl mx-auto px-4 py-6">
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-bold">Data Indikator</h1>
+        <a href="{{ route('indikator.create') }}"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm">+ Tambah Indikator</a>
+    </div>
 
-        @if (session('success'))
-            <div class="mb-4 text-red-400">{{ session('success') }}</div>
-        @endif
-
-        <a href="{{ route('indikator.create') }}" class=" bg-green-600 text-white px-4 py-2 rounded mb-4 inline-block">+
-            Tambah Indikator</a>
-
-        <table class="w-full table-auto border-collapse">
-            <thead>
-                <tr class="bg-gray-200">
-                    <th class="border px-4 py-2">Area</th>
-                    <th class="border px-4 py-2">Sub Area</th>
-                    <th class="border px-4 py-2">Kategori</th>
-                    <th class="border px-4 py-2">Nama Indikator</th>
-                    <th class="border px-4 py-2">Pertanyaan</th>
-                    <th class="border px-4 py-2">Tipe Jawaban</th>
-                    <th class="border px-4 py-2">Status</th>
-                    <th class="border px-4 py-2">Aksi</th>
+    <div class="bg-white shadow-md rounded-lg overflow-x-auto p-4">
+        <table class="min-w-full table-auto text-sm text-left">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-2">Kategori</th>
+                    <th class="px-4 py-2">Area</th>
+                    <th class="px-4 py-2">Sub Area</th>
+                    <th class="px-4 py-2">Nama Indikator</th>
+                    <th class="px-4 py-2">Pertanyaan</th>
+                    <th class="px-4 py-2">Tipe Jawaban</th>
+                    <th class="px-4 py-2 text-center">Status</th>
+                    <th class="px-4 py-2 text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($indikators as $indikator)
-                    <tr>
-                        <td class="border px-4 py-2">{{ $indikator->area->name }}</td>
-                        <td class="border px-4 py-2">{{ $indikator->subArea->name }}</td>
-                        <td class="border px-4 py-2">{{ ucfirst($indikator->kategori) }}</td>
-                        <td class="border px-4 py-2">{{ $indikator->nama_indikator }}</td>
-                        <td class="border px-4 py-2">{{ $indikator->pertanyaan }}</td>
-                        <td class="border px-4 py-2">{{ strtoupper($indikator->tipe_jawaban) }}</td>
-                        <td class="border px-4 py-2 text-center">
-                            @if(!$indikator->is_published)
-                                <form action="{{ route('indikator.toggle-publish', $indikator->id) }}" method="POST">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit"
-                                        class="bg-yellow-500 hover:bg-yellow-600 text-white text-xs px-3 py-1 rounded">
-                                        Publish
-                                    </button>
-                                </form>
-                            @else
-                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-semibold">
-                                    Published
-                                </span>
-                            @endif
-                        <td class="border px-4 py-2">
-                            <div class="flex justify-center space-x-2">
-                                {{-- Tombol Edit --}}
-                                <a href="{{ route('indikator.edit', $indikator->id) }}"
-                                    class="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded">
-                                    Edit
-                                </a>
+                @forelse ($indikators as $indikator)
+                <tr class="border-t">
+                    
+                    <td class="px-4 py-2 capitalize">{{ $indikator->kategori }}</td>
+                    <td class="px-4 py-2">{{ $indikator->area->name ?? '-' }}</td>
+                    <td class="px-4 py-2">{{ $indikator->subArea->name ?? '-' }}</td>
+                    <td class="px-4 py-2">{{ $indikator->nama_indikator }}</td>
+                    <td class="px-4 py-2">{{ $indikator->pertanyaan }}</td>
+                    <td class="px-4 py-2">{{ $indikator->tipe_jawaban }}</td>
+                    <td class="px-4 py-2 text-center">
+                        @if ($indikator->status === 'published')
+                            <span class="text-green-600 text-sm">Published</span>
+                        @else
+                            <span class="text-gray-600 text-sm">Draft</span>
+                        @endif
+                    </td>
+                    <td class="px-4 py-2 text-center flex justify-center gap-3 mt-2">
+                        <a href="{{ route('indikator.edit', $indikator->id) }}"
+                            class="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded">Edit</a>
 
-                                {{-- Tombol Hapus --}}
-                                <form action="{{ route('indikator.destroy', $indikator->id) }}" method="POST"
-                                    onsubmit="return confirm('Yakin ingin menghapus indikator ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded">
-                                        Hapus
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
+                        <form action="{{ route('indikator.destroy', $indikator->id) }}" method="POST"
+                            onsubmit="return confirm('Yakin ingin menghapus indikator ini?')" class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded">
+                                Hapus
+                            </button>
+                        </form>
+
+                        @if ($indikator->status === 'draft')
+                            <form action="{{ route('indikator.publish', $indikator->id) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit"
+                                    class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1 rounded">
+                                    Publish
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('indikator.unpublish', $indikator->id) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit"
+                                    class="bg-yellow-500 hover:bg-yellow-600 text-white text-xs px-3 py-1 rounded">
+                                    Unpublish
+                                </button>
+                            </form>
+                        @endif
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-gray-500">Belum ada indikator.</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
+</div>
 @endsection

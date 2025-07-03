@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Str;
+use App\Models\Periode;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,23 +25,22 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('*', function ($view) {
-        $user = Auth::user();
-        $role = $user?->getRoleNames()->first();
-        $area = $user?->area;
-        $areaId = $user?->area_id;
-        $areaUser = Str::after($area, 'area');
-        $routeName = Request::route()?->getName();
+            $masterPeriode = Periode::where('tahun', 2025)->first();
+            $view->with('masterPeriode', $masterPeriode);
+            $user = Auth::user();
+            $role = $user?->getRoleNames()->first();
+            $area = $user?->area;
+            $areaId = $user?->area_id;
+            $areaUser = Str::after($area, 'area');
+            $routeName = Request::route()?->getName();
 
-        // Sidebar aktif indikator
-        $indikatorActive = Str::startsWith($routeName, 'indikator.') || Str::startsWith($routeName, 'manager-area.indikator');
+            // Sidebar aktif indikator
+            $indikatorActive = Str::startsWith($routeName, 'indikator.') || Str::startsWith($routeName, 'manager-area.indikator');
 
-        // Sidebar aktif dashboard
-        $dashboardActive = $routeName === ($role === 'admin' ? 'admin.dashboard' : 'manager-area.dashboard');
+            // Sidebar aktif dashboard
+            $dashboardActive = $routeName === ($role === 'admin' ? 'admin.dashboard' : 'manager-area.dashboard');
 
-        $view->with(compact(
-            'user', 'role', 'area', 'areaId', 'areaUser', 'routeName',
-            'indikatorActive', 'dashboardActive'
-        ));
-    });
-}
+            $view->with(compact('user', 'role', 'area', 'areaId', 'areaUser', 'routeName', 'indikatorActive', 'dashboardActive'));
+        });
+    }
 }

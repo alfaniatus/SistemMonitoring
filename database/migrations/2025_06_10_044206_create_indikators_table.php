@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->string('nama_indikator')->nullable();
             $table->enum('tipe_jawaban', ['ya/tidak', 'abcde']);
             $table->integer('bobot');
-            $table->boolean('is_published')->default(false);
+            $table->enum('status', ['draft', 'published'])->default('draft');
             $table->timestamps();
         });
     }
